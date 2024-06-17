@@ -3,6 +3,9 @@
 // nannouの基本的なツール群を使えるようにする
 use nannou::prelude::*;
 
+// 実行される関数のルート
+// 実行されるのはこの関数のみで，ほかの関数はこの関数内で呼び出される
+// nannou においては短い関数になっていることが多い
 fn main() {
   nannou::app(model).update(update).simple_window(view).run();
 }
