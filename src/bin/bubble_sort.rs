@@ -5,7 +5,11 @@ use nannou::prelude::*;
 
 // 実行される関数のルート
 fn main() {
-  nannou::app(model).simple_window(view).size(600, 600).run();
+  nannou::app(model)
+    .update(update) // update関数を登録
+    .simple_window(view)
+    .size(600, 600)
+    .run();
 }
 
 // Model は，状態を管理するところ
@@ -20,6 +24,22 @@ fn model(_app: &App) -> Model {
   }
 }
 
+/// bubble_sort_step 関数を呼び出して、Model.values の内容をソートする
+fn update(_app: &App, model: &mut Model, _update: Update) {
+  bubble_sort_step(&mut model.values);
+}
+
+/// バブルソートのステップを1ステップだけ進める
+fn bubble_sort_step(values: &mut Vec<u32>) -> &Vec<u32> {
+  for j in 0..values.len() - 1 {
+    if values[j] > values[j + 1] {
+      values.swap(j, j + 1);
+    }
+  }
+  values
+}
+
+/// ランダムな数値で埋めた Vec を用意する
 fn initialize_values() -> Vec<u32> {
   let mut values = vec![];
   for _i in 0..600 {
@@ -27,8 +47,6 @@ fn initialize_values() -> Vec<u32> {
   }
   values
 }
-
-// fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
 fn view(app: &App, model: &Model, frame: Frame) {
   let draw = app.draw();
