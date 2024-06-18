@@ -13,9 +13,12 @@ const Z: f32 = 0.0;
 const A: f32 = 10.0;
 const B: f32 = 28.0;
 const C: f32 = 8.0 / 3.0;
-const SCALE: f32 = 10.0;
 
-const MAX_POINTS: usize = 10000;
+const DT : f32 = 0.01;
+
+const SCALE: f32 = 10.0;
+const MAX_POINTS: usize = 5000;
+const COLOR_SPEED : f32 = 10.0;
 
 fn main() {
   nannou::app(model).update(update).simple_window(view).run();
@@ -40,7 +43,7 @@ fn model(_app: &App) -> Model {
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) -> () {
-  let (x, y, z) = euler_method(model.x, model.y, model.z, 0.01);
+  let (x, y, z) = euler_method(model.x, model.y, model.z, DT);
   model.x = x;
   model.y = y;
   model.z = z;
@@ -62,19 +65,24 @@ fn view(app: &App, model: &Model, frame: Frame) {
   draw.background().color(bg_color);
 
   // ベクターの各点を線でつなぎながら描画する
-  for window in model.traj.windows(2) {
-    let x0 = window[0].x * SCALE;
-    let y0 = window[0].y * SCALE;
-    let z0 = window[0].z * SCALE;
-    let x1 = window[1].x * SCALE;
-    let y1 = window[1].y * SCALE;
-    let z1 = window[1].z * SCALE;
+  for (i, window) in model.traj.windows(2).enumerate() {
+    let x0 = window[0].x;
+    let y0 = window[0].y;
+    let z0 = window[0].z;
+    let x1 = window[1].x;
+    let y1 = window[1].y;
+    let z1 = window[1].z;
+
+    let hue = (i as f32) / (MAX_POINTS as f32) * COLOR_SPEED;
+    let color = hsla(hue,0.7, 0.7, 1.0);
+
     draw
+      .scale(SCALE)
       .line()
       .start(pt3(x0, y0, z0).into())
       .end(pt3(x1, y1, z1).into())
-      .weight(1.0)
-      .color(WHITE);
+      .weight(0.1)
+      .color(color);
   }
 
   // 描画を完了
