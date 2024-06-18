@@ -1,4 +1,4 @@
-/*  */
+/* Lorenz アトラクター */
 
 // nannouの基本的なツール群を使えるようにする
 use nannou::prelude::*;
